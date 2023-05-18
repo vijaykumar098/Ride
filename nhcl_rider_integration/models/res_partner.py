@@ -19,7 +19,7 @@ class ResPartner(models.Model):
         # engine = create_engine("mysql+mysqldb://root:@localhost/rider_demo_db")
         with engine.connect() as connection:
             query = text(
-                "SELECT ID, Name, Phone, Email, Street, Street2, City, State,  Zip, Country, Vat, Mobile, Property_Account_Receivable, Property_Account_Payable, Customer_Rank, Company, Company_Type FROM contact where Flag is NULL")
+                "SELECT ID, Name, Email, Phone, Street, Street2, City, State,  Zip, Country, Vat, Mobile, Property_Account_Receivable, Property_Account_Payable, Customer_Rank, Company, Company_Type FROM contact where Flag is NULL")
             data = connection.execute(query)
             for (ID, Name, Phone, Email, Street, Street2, City, State, Zip, Country, Vat, Mobile,
                  Property_Account_Receivable, Property_Account_Payable, Customer_Rank, Company, Company_Type) in data:
