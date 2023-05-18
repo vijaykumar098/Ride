@@ -59,7 +59,7 @@ class AccountMove(models.Model):
                         'currency_id': currency_id.id,
                     }
                     move_id = self.env['account.move'].create(vals)
-                    update_query = (
+                    update_query = text(
                         "UPDATE invoice SET Flag=1 where Customer=Customer AND State=State AND Country=Country AND State_Code=State_Code AND Product=Product")
                     connection.execute(update_query)
                 move_line_id = self.env['account.move.line'].search(
@@ -80,7 +80,7 @@ class AccountMove(models.Model):
                     line = self.env['account.move.line'].create(move_lines)
                     line.tax_ids = False
                     line.tax_ids = tax_ids
-                    line_query = (
+                    line_query = text(
                         "UPDATE invoice SET Flag=1 where Customer=Customer AND State=State AND Country=Country AND State_Code=State_Code AND Product=Product")
                     connection.execute(line_query)
             return data

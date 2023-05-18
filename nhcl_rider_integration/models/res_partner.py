@@ -53,7 +53,7 @@ class ResPartner(models.Model):
                         'company_type': Company_Type,
                     }
                     self.env['res.partner'].create(vals)
-                    update_query = ("UPDATE Contact SET Flag=1 where Name=Name AND Phone=Phone AND Email=Email")
+                    update_query = text("UPDATE Contact SET Flag=1 where Name=Name AND Phone=Phone AND Email=Email")
                     connection.execute(update_query)
                     self.env['account.move'].call_rider_account_move()
                     self.env['account.payment'].call_rider_account_payment()

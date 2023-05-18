@@ -30,6 +30,6 @@ class AccountPayment(models.Model):
                         }
                         customer_id = self.env['res.partner'].create(vals)
                     self.env['account.payment'].create({'partner_id': customer_id.id, 'amount': Amount})
-                    update_query = ("UPDATE accountpayment SET Flag=1 where Customer=Customer")
+                    update_query = text("UPDATE accountpayment SET Flag=1 where Customer=Customer")
                     connection.execute(update_query)
             return data
