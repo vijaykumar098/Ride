@@ -1,5 +1,6 @@
 from odoo import models
 from sqlalchemy import create_engine
+from sqlalchemy import text
 
 class AccountPayment(models.Model):
     _inherit = 'account.payment'
@@ -16,7 +17,7 @@ class AccountPayment(models.Model):
             engine = create_engine(f'mysql+pymysql://{mysqluser}:@{localhost}/{mysqldb}')
         # engine = create_engine("mysql+pymysql://root:@localhost/rider_demo_db")
         with engine.connect() as connection:
-            query = ("SELECT ID, Customer,Amount FROM accountpayment where Flag IS NULL")
+            query = text("SELECT ID, Customer,Amount FROM accountpayment where Flag IS NULL")
             data = connection.execute(query)
             for (ID, Customer, Amount) in data:
                 customer_id = self.env['res.partner'].search([('name', '=', Customer)])

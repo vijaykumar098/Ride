@@ -1,5 +1,6 @@
 from odoo import models, fields
 from sqlalchemy import create_engine
+from sqlalchemy import text
 
 
 class AccountMove(models.Model):
@@ -17,7 +18,7 @@ class AccountMove(models.Model):
             engine = create_engine(f'mysql+pymysql://{mysqluser}:@{localhost}/{mysqldb}')
         # engine = create_engine("mysql+mysqldb://root:@localhost/rider_demo_db")
         with engine.connect() as connection:
-            query = (
+            query = text(
                 "SELECT ID, Customer, Journal, Company, State, State_Code, Move_Type, Ref, Partner_Bank, Currency, Country, Product, Account, Quantity, Product_Uom, Price_Unit, Discount, Tax_Ids FROM invoice where Flag IS NULL")
             data = connection.execute(query)
             for (
