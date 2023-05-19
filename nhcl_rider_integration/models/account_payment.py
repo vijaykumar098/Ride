@@ -20,6 +20,15 @@ class AccountPayment(models.Model):
             query = text("SELECT ID, Customer,Amount FROM accountpayment where Flag IS NULL")
             data = connection.execute(query)
             for (ID, Customer, Amount) in data:
+                if Customer == None:
+                    _logger.warning("Customer Name Must be Required to create a Account Payment for ID %s",ID)
+                    continue
+                if Amount == None:
+                    _logger.warning("Amount Must be Greater than Zero for ID %s", ID)
+                    continue
+                if Amount and Amount <=0 :
+                    _logger.warning("Amount Must be Greater than Zero for ID %s",ID)
+                    continue
                 customer_id = self.env['res.partner'].search([('name', '=', Customer)])
                 payment_id = self.env['account.payment'].search(
                     [('partner_id', '=', customer_id.id), ('state', '=', 'draft')])
@@ -29,7 +38,8 @@ class AccountPayment(models.Model):
                             'name': Customer,
                         }
                         customer_id = self.env['res.partner'].create(vals)
-                    self.env['account.payment'].create({'partner_id': customer_id.id, 'amount': Amount})
-                    update_query = text("UPDATE accountpayment SET Flag=1 where Customer=Customer")
-                    connection.execute(update_query)
+                    payment_id = self.env['account.payment'].create({'partner_id': customer_id.id, 'amount': Amount})
+                    if payment_id:
+                        update_query = text("UPDATE accountpayment SET Flag=1 where ID=ID")
+                        connection.execute(update_query)
             return data
