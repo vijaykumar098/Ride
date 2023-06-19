@@ -93,9 +93,9 @@ class AccountMove(models.Model):
                 line.tax_ids = False
                 line.tax_ids = product_id.taxes_id
                 if line:
-                    ci_line_update_query = text("UPDATE captain_invoice SET Flag=1 where Customer=%s and Ref=%s")
+                    ci_line_update_query = ("UPDATE captain_invoice SET Flag=1 where Customer='%s' and Ref='%s'")
                     ci_l_vals = (move_id.partner_id.name, move_id.ref)
-                    connection.execute(ci_line_update_query, ci_l_vals)
+                    connection.execute(text(ci_line_update_query %ci_l_vals))
                     _logger.info("Success to Create Invoice with Customer - %s and Ref - %s", Customer, Ref)
                     self.env.cr.commit()
         else:
@@ -182,9 +182,9 @@ class AccountMove(models.Model):
                 line.tax_ids = False
                 line.tax_ids = product_id.taxes_id
                 if line:
-                    ri_line_update_query = text("UPDATE rider_invoice SET Flag=1 where Customer=%s and Ref=%s")
+                    ri_line_update_query = ("UPDATE rider_invoice SET Flag=1 where Customer='%s' and Ref='%s'")
                     ri_l_vals = (move_id.partner_id.name, move_id.ref)
-                    connection.execute(ri_line_update_query, ri_l_vals)
+                    connection.execute(text(ri_line_update_query %ri_l_vals))
                     _logger.info("Success to Create Invoice with Customer - %s and Ref - %s", Customer, Ref)
                     self.env.cr.commit()
         else:
