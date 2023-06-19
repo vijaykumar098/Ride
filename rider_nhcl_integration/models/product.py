@@ -49,9 +49,9 @@ class ProductProduct(models.Model):
                 }
                 product_id = self.env['product.product'].create(vals)
                 if product_id:
-                    service_update_query = text("UPDATE service SET Flag=1 where Internal_Ref=%s and Name=%s")
+                    service_update_query = ("UPDATE service SET Flag=1 where Internal_Ref='%s' and Name='%s'")
                     s_vals = (product_id.default_code, product_id.name)
-                    connection.execute(service_update_query, s_vals)
+                    connection.execute(text(service_update_query %s_vals))
                     _logger.info("Success to Create Product with Name - %s and Internal_Ref - %s",Name,Internal_Ref)
                     self.env.cr.commit()
         else:
