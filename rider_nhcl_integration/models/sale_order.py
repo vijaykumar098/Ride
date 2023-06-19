@@ -63,9 +63,9 @@ class SaleOrder(models.Model):
             }
             sale_order_id = self.env['sale.order'].create(vals)
             if sale_order_id:
-                cs_move_update_query = text("UPDATE captain_subscription SET Flag=1 where Customer=%s and Subscription_Plan=%s and Mobile = %s")
+                cs_move_update_query = ("UPDATE captain_subscription SET Flag=1 where Customer='%s' and Subscription_Plan='%s' and Mobile = '%s'")
                 cs_m_vals = (sale_order_id.partner_id.name,sale_order_id.sale_order_template_id.name,sale_order_id.partner_id.mobile)
-                connection.execute(cs_move_update_query, cs_m_vals)
+                connection.execute(text(cs_move_update_query %cs_m_vals))
                 self.env.cr.commit()
                 _logger.info("Success to Create Subscription With Customer - %s and  Mobile - %s and Subscription_Plan - %s", Customer, Mobile, Subscription_Plan)
                 sale_order_id._onchange_sale_order_template_id()
