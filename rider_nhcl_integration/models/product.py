@@ -1,6 +1,7 @@
 import logging
 from odoo import models
 from odoo.exceptions import UserError
+from sqlalchemy import create_engine, text
 
 _logger = logging.getLogger(__name__)
 
@@ -10,10 +11,10 @@ class ProductProduct(models.Model):
 
     def call_rider_product_product(self, connection, LOG_FILENAME,Product):
         if Product != None:
-            service_select_query = ("SELECT ID, Name, Internal_Ref, Company, Invoice_Policy, Service_Policy FROM service where Name='" + Product + "'")
+            service_select_query = text("SELECT ID, Name, Internal_Ref, Company, Invoice_Policy, Service_Policy FROM service where Name='" + Product + "'")
             service_data = connection.execute(service_select_query)
         else:
-            service_select_query = (
+            service_select_query = text(
                 "SELECT ID, Name, Internal_Ref, Company, Invoice_Policy, Service_Policy FROM service where Flag IS NULL")
             service_data = connection.execute(service_select_query)
             file_handler = logging.FileHandler(LOG_FILENAME, mode='a', encoding='utf-8')
@@ -48,7 +49,7 @@ class ProductProduct(models.Model):
                 }
                 product_id = self.env['product.product'].create(vals)
                 if product_id:
-                    service_update_query = ("UPDATE service SET Flag=1 where Internal_Ref=%s and Name=%s")
+                    service_update_query = text("UPDATE service SET Flag=1 where Internal_Ref=%s and Name=%s")
                     s_vals = (product_id.default_code, product_id.name)
                     connection.execute(service_update_query, s_vals)
                     _logger.info("Success to Create Product with Name - %s and Internal_Ref - %s",Name,Internal_Ref)

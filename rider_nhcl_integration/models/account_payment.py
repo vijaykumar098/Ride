@@ -1,7 +1,7 @@
 import logging,re
 from odoo import models
 import phonenumbers
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine,text
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -13,7 +13,7 @@ class AccountPayment(models.Model):
     #####  cp = captain_payment
 
     def call_captain_account_payment(self, connection, LOG_FILENAME):
-        cp_select_query = ("SELECT ID, Customer, Mobile, Ref, Amount FROM captain_payment where Flag IS NULL")
+        cp_select_query = text("SELECT ID, Customer, Mobile, Ref, Amount FROM captain_payment where Flag IS NULL")
         cp_data = connection.execute(cp_select_query)
         file_handler = logging.FileHandler(LOG_FILENAME, mode='a', encoding='utf-8')
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -57,7 +57,7 @@ class AccountPayment(models.Model):
                     {'partner_id': customer_id.id, 'ref': Ref, 'currency_id': company_id.currency_id.id,
                      'amount': Amount})
                 if payment_id:
-                    cp_update_query = ("UPDATE captain_payment SET Flag=1 where Ref=%s and Mobile=%s and Customer=%s")
+                    cp_update_query = text("UPDATE captain_payment SET Flag=1 where Ref=%s and Mobile=%s and Customer=%s")
                     cp_vals = (payment_id.ref, payment_id.partner_id.mobile, payment_id.partner_id.name)
                     connection.execute(cp_update_query, cp_vals)
                     _logger.info("Success to Create Payment With Customer - %s and Ref - %s", Customer, Ref)
@@ -69,7 +69,7 @@ class AccountPayment(models.Model):
     #####  rp = rider_payment
 
     def call_rider_account_payment(self, connection, LOG_FILENAME):
-        rp_select_query = ("SELECT ID, Customer, Mobile, Ref, Amount FROM  rider_payment where Flag IS NULL")
+        rp_select_query = text("SELECT ID, Customer, Mobile, Ref, Amount FROM  rider_payment where Flag IS NULL")
         rp_data = connection.execute(rp_select_query)
         _logger.info('Rider Payment Info')
         for (ID, Customer, Mobile, Ref, Amount) in rp_data:
@@ -108,7 +108,7 @@ class AccountPayment(models.Model):
                     {'partner_id': customer_id.id, 'ref': Ref, 'currency_id': company_id.currency_id.id,
                      'amount': Amount})
                 if payment_id:
-                    rp_update_query = ("UPDATE rider_payment SET Flag=1 where Ref=%s and Mobile=%s and Customer=%s")
+                    rp_update_query = text("UPDATE rider_payment SET Flag=1 where Ref=%s and Mobile=%s and Customer=%s")
                     rp_vals = (payment_id.ref, payment_id.partner_id.mobile, payment_id.partner_id.name)
                     connection.execute(rp_update_query, rp_vals)
                     _logger.info("Success to Create Payment With Customer - %s and Ref - %s", Customer, Ref)

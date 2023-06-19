@@ -2,11 +2,12 @@ import time
 
 import phonenumbers
 from odoo import models, _
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine ,text
 import logging
 from datetime import datetime
 import base64, os
 from odoo.exceptions import UserError
+
 
 _logger = logging.getLogger(__name__)
 
@@ -55,7 +56,7 @@ class ResPartner(models.Model):
         self.call_ride_sequence_functions(connection)
 
     def call_captain_contact(self, connection):
-        captain_select_query = (
+        captain_select_query = text(
             "SELECT ID, Name, Mobile, Email, Street, Street2, City, State, Zip, Company, Customer_Rank, Company_Type FROM captain where Flag is NULL")
         captain_data = connection.execute(captain_select_query)
         _logger.info('Captain Contact Info')
@@ -109,7 +110,7 @@ class ResPartner(models.Model):
                 if partner_id:
                     partner_id._onchange_mobile_validation()
                     partner_id._onchange_phone_validation()
-                    captain_update_query = ("UPDATE captain SET Flag=1 where Name=%s and Mobile = %s")
+                    captain_update_query = text("UPDATE captain SET Flag=1 where Name=%s and Mobile = %s")
                     c_vals = (partner_id.name, partner_id.mobile)
                     connection.execute(captain_update_query, c_vals)
                     _logger.info("Success to Create Contact With Name - %s and Mobile No. - %s", Name, Mobile)
@@ -119,7 +120,7 @@ class ResPartner(models.Model):
         return captain_data
 
     def call_rider_contact(self, connection):
-        rider_select_query = (
+        rider_select_query = text(
             "SELECT ID, Name, Mobile, Email, Street, Street2, City, State, Zip, Company, Customer_Rank, Company_Type FROM rider where Flag is NULL")
         rider_data = connection.execute(rider_select_query)
         _logger.info('Rider Contact Info')
@@ -173,7 +174,7 @@ class ResPartner(models.Model):
                 if partner_id:
                     partner_id._onchange_mobile_validation()
                     partner_id._onchange_phone_validation()
-                    rider_update_query = ("UPDATE rider SET Flag=1 where Name=%s and Mobile = %s")
+                    rider_update_query = text("UPDATE rider SET Flag=1 where Name=%s and Mobile = %s")
                     r_vals = (partner_id.name, partner_id.mobile)
                     connection.execute(rider_update_query, r_vals)
                     _logger.info("Success to Create Contact With Name - %s and Mobile No. - %s", Name, Mobile)

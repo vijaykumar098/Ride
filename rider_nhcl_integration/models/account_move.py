@@ -1,6 +1,6 @@
 import logging
 from odoo import models, fields
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -12,7 +12,7 @@ class AccountMove(models.Model):
     ######  ci = captain_invoice
 
     def call_captain_account_move(self, connection, LOG_FILENAME):
-        ci_select_query = (
+        ci_select_query = text(
             "SELECT ID, Customer, Ref, Mobile, Product, Price_Unit, Discount FROM captain_invoice where Flag IS NULL")
         ci_data = connection.execute(ci_select_query)
         file_handler = logging.FileHandler(LOG_FILENAME, mode='a', encoding='utf-8')
@@ -93,7 +93,7 @@ class AccountMove(models.Model):
                 line.tax_ids = False
                 line.tax_ids = product_id.taxes_id
                 if line:
-                    ci_line_update_query = ("UPDATE captain_invoice SET Flag=1 where Customer=%s and Ref=%s")
+                    ci_line_update_query = text("UPDATE captain_invoice SET Flag=1 where Customer=%s and Ref=%s")
                     ci_l_vals = (move_id.partner_id.name, move_id.ref)
                     connection.execute(ci_line_update_query, ci_l_vals)
                     _logger.info("Success to Create Invoice with Customer - %s and Ref - %s", Customer, Ref)
@@ -105,7 +105,7 @@ class AccountMove(models.Model):
     ######  ri = rider_invoice
 
     def call_rider_account_move(self, connection, LOG_FILENAME):
-        ri_select_query = (
+        ri_select_query = text(
             "SELECT ID, Customer, Ref, Mobile, Product, Price_Unit, Discount FROM rider_invoice where Flag IS NULL")
         ri_data = connection.execute(ri_select_query)
         _logger.info('Rider Invoice Info')
@@ -182,7 +182,7 @@ class AccountMove(models.Model):
                 line.tax_ids = False
                 line.tax_ids = product_id.taxes_id
                 if line:
-                    ri_line_update_query = ("UPDATE rider_invoice SET Flag=1 where Customer=%s and Ref=%s")
+                    ri_line_update_query = text("UPDATE rider_invoice SET Flag=1 where Customer=%s and Ref=%s")
                     ri_l_vals = (move_id.partner_id.name, move_id.ref)
                     connection.execute(ri_line_update_query, ri_l_vals)
                     _logger.info("Success to Create Invoice with Customer - %s and Ref - %s", Customer, Ref)

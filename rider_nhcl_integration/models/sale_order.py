@@ -2,6 +2,7 @@ from odoo import models, _, api, fields
 import logging
 _logger = logging.getLogger(__name__)
 from odoo.tests import Form
+from sqlalchemy import create_engine, text
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
@@ -11,7 +12,7 @@ class SaleOrder(models.Model):
     ##### cs = captain_subscription
 
     def call_captain_subscription(self, connection,LOG_FILENAME):
-        cs_select_query = (
+        cs_select_query = text(
             "SELECT ID, Customer, Mobile, Subscription_Plan FROM captain_subscription where Flag IS NULL")
         cs_data = connection.execute(cs_select_query)
         file_handler = logging.FileHandler(LOG_FILENAME, mode='a', encoding='utf-8')
@@ -62,7 +63,7 @@ class SaleOrder(models.Model):
             }
             sale_order_id = self.env['sale.order'].create(vals)
             if sale_order_id:
-                cs_move_update_query = ("UPDATE captain_subscription SET Flag=1 where Customer=%s and Subscription_Plan=%s and Mobile = %s")
+                cs_move_update_query = text("UPDATE captain_subscription SET Flag=1 where Customer=%s and Subscription_Plan=%s and Mobile = %s")
                 cs_m_vals = (sale_order_id.partner_id.name,sale_order_id.sale_order_template_id.name,sale_order_id.partner_id.mobile)
                 connection.execute(cs_move_update_query, cs_m_vals)
                 self.env.cr.commit()
