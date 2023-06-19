@@ -25,6 +25,8 @@
                                 <field name="mysqlpwd" nolabel="1"/>
                                 <label for="mysqldb" class="col-4 col-lg-4 o_light_label"/>
                                 <field name="mysqldb" nolabel="1"/>
+                                 <label for="log_file_path" class="col-4 col-lg-4 o_light_label"/>
+                                <field name="log_file_path" nolabel="1"/>
                             </div>
                         </div>
                     </div>

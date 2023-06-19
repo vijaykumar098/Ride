@@ -9,3 +9,4 @@ class ResConfigSettings(models.TransientModel):
     mysqluser = fields.Char("MySql User", config_parameter='rider_nhcl_integration.mysqluser')
     mysqlpwd = fields.Char("MySql Password", config_parameter='rider_nhcl_integration.mysqlpwd')
     mysqldb = fields.Char("MySql DB", config_parameter='rider_nhcl_integration.mysqldb')
+    log_file_path = fields.Char("Log File Path", config_parameter='rider_nhcl_integration.log_file_path')

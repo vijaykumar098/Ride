@@ -20,19 +20,19 @@ class ResPartner(models.Model):
         mysqluser = get_param('rider_nhcl_integration.mysqluser')
         mysqlpwd = get_param('rider_nhcl_integration.mysqlpwd')
         mysqldb = get_param('rider_nhcl_integration.mysqldb')
+        log_file_path = get_param('rider_nhcl_integration.log_file_path')
         if localhost and mysqluser and mysqldb:
             if mysqlpwd:
                 engine = create_engine(f'mysql+pymysql://{mysqluser}:{mysqlpwd}@{localhost}/{mysqldb}')
             else:
                 engine = create_engine(f'mysql+pymysql://{mysqluser}:@{localhost}/{mysqldb}')
             with engine.connect() as connection:
-                self.call_ride_sequence_functions(connection)
+                self.call_ride_sequence_functions(connection,log_file_path)
         else:
             raise UserError(_("Please Check the MySQL configuration in General Settings"))
 
-    def call_ride_sequence_functions(self,connection):
-        LOG_FILENAME = datetime.now().strftime(
-            r'C:/Users/Administrator/Desktop/Navya/Rider Modules/Log/logfile_%H_%M_%S_%d_%m_%Y.log')
+    def call_ride_sequence_functions(self,connection,log_file_path):
+        LOG_FILENAME = datetime.now().strftime(log_file_path+'/logfile_%H_%M_%S_%d_%m_%Y.log')
         mail_name = datetime.now().strftime('logfile_%H_%M_%S_%d_%m_%Y.log')
         file = logging.FileHandler(filename=LOG_FILENAME)
         file.setLevel(logging.DEBUG)

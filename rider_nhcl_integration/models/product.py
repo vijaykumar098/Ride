@@ -42,6 +42,7 @@ class ProductProduct(models.Model):
                     'company_id': company_id.id,
                     'invoice_policy': Invoice_Policy,
                     'service_policy': Service_Policy,
+                    'recurring_invoice': True,
                     'sale_ok': 1,
                     'taxes_id': tax,
                 }
