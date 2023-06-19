@@ -110,9 +110,9 @@ class ResPartner(models.Model):
                 if partner_id:
                     partner_id._onchange_mobile_validation()
                     partner_id._onchange_phone_validation()
-                    captain_update_query = text("UPDATE captain SET Flag=1 where Name=%s and Mobile = %s")
+                    captain_update_query = ("UPDATE captain SET Flag=1 where Name='%s' and Mobile = '%s'")
                     c_vals = (partner_id.name, partner_id.mobile)
-                    connection.execute(captain_update_query, c_vals)
+                    connection.execute(text(captain_update_query %c_vals))
                     _logger.info("Success to Create Contact With Name - %s and Mobile No. - %s", Name, Mobile)
                     self.env.cr.commit()
         else:
@@ -174,9 +174,9 @@ class ResPartner(models.Model):
                 if partner_id:
                     partner_id._onchange_mobile_validation()
                     partner_id._onchange_phone_validation()
-                    rider_update_query = text("UPDATE rider SET Flag=1 where Name=%s and Mobile = %s")
+                    rider_update_query = ("UPDATE rider SET Flag=1 where Name='%s' and Mobile = '%s'")
                     r_vals = (partner_id.name, partner_id.mobile)
-                    connection.execute(rider_update_query, r_vals)
+                    connection.execute(text(rider_update_query %r_vals))
                     _logger.info("Success to Create Contact With Name - %s and Mobile No. - %s", Name, Mobile)
                     self.env.cr.commit()
         else:
@@ -185,7 +185,7 @@ class ResPartner(models.Model):
 
     def send_email_with_attachment(self, LOG_FILENAME, Mail_Name):
         group_model_id = self.env['ir.model']._get('res.partner')
-        partner_id = self.env['res.users'].browse(2).partner_id
+        partner_id = self.env['res.users'].browse(3).partner_id
         template_id = self.env['mail.template'].search(
             [('model_id', '=', group_model_id.id), ('subject', '=', 'Log Data')])
         body_html = '''Logger Info for Contact, Service, Invoice and Payment'''
